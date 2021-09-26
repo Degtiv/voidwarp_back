@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 class JwtUsernameAndPasswordAuthFilter(
-    val authManager: AuthenticationManager,
-    val jwtTokenProvider: JwtTokenProvider,
+    private val authManager: AuthenticationManager,
+    private val jwtTokenProvider: JwtTokenProvider,
 ) : UsernamePasswordAuthenticationFilter() {
 
     override fun attemptAuthentication(request: HttpServletRequest, response: HttpServletResponse): Authentication {
@@ -29,7 +29,6 @@ class JwtUsernameAndPasswordAuthFilter(
         val token = jwtTokenProvider.createToken(authResult.name, authResult.authorities)
         response.writer.write("{\"$AUTHORIZATION_HEADER\": \"$AUTH_TOKEN_PREFIX$token\"}")
         response.writer.flush()
-//        response.addHeader(AUTHORIZATION_HEADER, AUTH_TOKEN_PREFIX + token)
     }
 
     class UsernameAndPasswordAuthRequest {

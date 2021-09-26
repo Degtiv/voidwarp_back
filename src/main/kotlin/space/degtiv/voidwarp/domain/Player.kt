@@ -1,27 +1,22 @@
 package space.degtiv.voidwarp.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import java.io.Serializable
 import java.util.*
-import javax.persistence.*
 
-@Entity
-@Table(name = "players")
+@Document(collection = "players")
 class Player(
-    @Column(length = 100, nullable = false, updatable = true)
     private var username: String,
     @JsonIgnore
-    @Column(length = 100, nullable = false, updatable = true)
     private var password: String
 ) : UserDetails, Serializable {
     @Id
-    @Column(length = 100, nullable = false, updatable = false)
-    val uuid = UUID.randomUUID().toString()
+    var uuid = UUID.randomUUID().toString()
 
-    @CollectionTable(name = "authorities", joinColumns = [JoinColumn(name = "player_id")])
-    @ElementCollection(targetClass = SimpleGrantedAuthority::class, fetch = FetchType.EAGER)
     @JsonIgnore
     var authorities = mutableSetOf<SimpleGrantedAuthority>()
     var isActive = false

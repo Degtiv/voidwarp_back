@@ -63,7 +63,7 @@ class JwtTokenProvider(
 
             return true
         } catch (e: Exception) {
-            when(e) {
+            when (e) {
                 is IllegalArgumentException, is JwtException -> {
                     throw JwtAuthenticationException("JWT token is expired or invalid")
                 }

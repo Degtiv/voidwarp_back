@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service
 import space.degtiv.voidwarp.domain.Player
 import space.degtiv.voidwarp.repository.PlayerRepository
 import space.degtiv.voidwarp.security.Role
+import java.lang.IllegalArgumentException
 
 @Service
 class PlayerService(
@@ -16,10 +17,13 @@ class PlayerService(
 ) : UserDetailsService {
     override fun loadUserByUsername(username: String): UserDetails {
         return playerRepository.findByUsername(username)
-            ?: throw UsernameNotFoundException("User with username = $username not found")
+            ?: throw UsernameNotFoundException("Player with username = $username not found")
     }
 
     fun addAndEnablePlayer(username: String, password: String, role: String?): Player {
+        if (playerRepository.findByUsername(username) != null)
+            throw IllegalArgumentException("Player with username = '$username' already exists")
+
         val player = Player(username, passwordEncoder.encode(password))
         player.isActive = true
         if (role != null) {
