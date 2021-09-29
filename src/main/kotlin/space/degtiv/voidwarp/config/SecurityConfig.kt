@@ -1,5 +1,6 @@
 package space.degtiv.voidwarp.config
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
@@ -25,6 +26,9 @@ class SecurityConfig(
     val jwtTokenFilter: JwtTokenFilter,
     val jwtTokenProvider: JwtTokenProvider
 ) : WebSecurityConfigurerAdapter() {
+    @Value("\${allowedFrontendOrigin}")
+    private val allowedFrontendOrigin: String? = null
+
     override fun configure(http: HttpSecurity) {
         http
             .cors().and()
@@ -45,6 +49,7 @@ class SecurityConfig(
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration()
         configuration.allowedOrigins = mutableListOf("http://localhost:4200")
+        configuration.allowedOrigins = mutableListOf("http://$allowedFrontendOrigin:80")
         configuration.allowedMethods = mutableListOf("*")
         configuration.allowedHeaders = mutableListOf("*")
         configuration.allowCredentials = true
