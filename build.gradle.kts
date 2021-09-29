@@ -42,3 +42,14 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+
+tasks.jar {
+	manifest {
+		attributes(mapOf("Implementation-Title" to project.name,
+			"Implementation-Version" to project.version))
+	}
+}
+
+java {
+	withSourcesJar()
+}
