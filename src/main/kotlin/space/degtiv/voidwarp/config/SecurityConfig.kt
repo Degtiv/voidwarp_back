@@ -13,10 +13,13 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import org.springframework.web.servlet.config.annotation.CorsRegistry
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import space.degtiv.voidwarp.security.jwt.JwtTokenFilter
 import space.degtiv.voidwarp.security.jwt.JwtTokenProvider
 import space.degtiv.voidwarp.security.jwt.JwtUsernameAndPasswordAuthFilter
 import space.degtiv.voidwarp.service.PlayerService
+
 
 @Configuration
 @EnableWebSecurity
@@ -28,6 +31,9 @@ class SecurityConfig(
 ) : WebSecurityConfigurerAdapter() {
     @Value("\${allowedFrontendOrigin}")
     private val allowedFrontendOrigin: String? = null
+
+    @Value("\${allowedDomainOrigin}")
+    private val allowedDomainOrigin: String? = null
 
     override fun configure(http: HttpSecurity) {
         http
@@ -46,10 +52,18 @@ class SecurityConfig(
     }
 
     @Bean
+    fun corsConfigurer(): WebMvcConfigurer {
+        return object : WebMvcConfigurer {
+            override fun addCorsMappings(registry: CorsRegistry) {
+                registry.addMapping("/**").allowedOrigins("$allowedFrontendOrigin", "$allowedDomainOrigin")
+            }
+        }
+    }
+
+    @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration()
-        configuration.allowedOrigins = mutableListOf("http://localhost:4200")
-        configuration.allowedOrigins = mutableListOf("http://$allowedFrontendOrigin")
+        configuration.allowedOrigins = mutableListOf("$allowedFrontendOrigin", "$allowedDomainOrigin")
         configuration.allowedMethods = mutableListOf("*")
         configuration.allowedHeaders = mutableListOf("*")
         configuration.allowCredentials = true
