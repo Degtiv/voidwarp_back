@@ -45,7 +45,7 @@ class SecurityConfig(
             .addFilter(JwtUsernameAndPasswordAuthFilter(authenticationManager(), jwtTokenProvider))
             .addFilterAfter(jwtTokenFilter, JwtUsernameAndPasswordAuthFilter::class.java)
             .authorizeRequests()
-                .antMatchers("/api/v1/auth/logout").authenticated()
+                .antMatchers("/api/v1/auth/logout", "/api/v1/auth/checkToken").authenticated()
                 .antMatchers("/", "index", "/css/*", "/js/*", "/api/v1/auth/**", "/login").permitAll()
             .anyRequest()
                 .authenticated()

@@ -1,5 +1,7 @@
 package space.degtiv.voidwarp.controller.api
 
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import space.degtiv.voidwarp.helper.ErrorMessage
 import space.degtiv.voidwarp.service.PlayerService
@@ -13,7 +15,7 @@ class AuthApiController(val playerService: PlayerService) {
         return try {
             playerService.addAndEnablePlayer(rqBody.username, rqBody.password, rqBody.role)
         } catch (ex: Exception) {
-            ErrorMessage(ex.message?:"Unable to create Player")
+            ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorMessage(ex.message?:"Unable to create Player"))
         }
     }
 

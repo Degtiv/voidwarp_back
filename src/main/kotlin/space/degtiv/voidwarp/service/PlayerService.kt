@@ -37,15 +37,21 @@ class PlayerService(
         return player
     }
 
-    fun getPlayerById(playerId: String): Player? {
-        return playerRepository.findByUuid(playerId)
+    fun getPlayerById(uuid: String): Player? {
+        return playerRepository.findByUuid(uuid)
     }
 
     fun savePlayer(player: Player) {
         playerRepository.save(player)
     }
 
+    fun deletePlayerById(uuid: String) {
+        val player = getPlayerById(uuid) ?: throw IllegalArgumentException("Player with uuid = $uuid not found")
+        playerRepository.delete(player)
+    }
+
     fun getAllPlayers(): Iterable<Player?> {
+        println("players:" + playerRepository.findAll().toString())
         return playerRepository.findAll()
     }
 
